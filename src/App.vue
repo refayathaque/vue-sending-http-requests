@@ -1,26 +1,32 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <h1>vue-sending-http-requests</h1>
+  <form @submit.prevent="submitForm">
+    <label for="greeting">Enter a greeting</label>
+    <input id="greeting" name="greeting" type="text" v-model="greeting" />
+    <button type="submit">Send this to AWS Lambda</button>
+  </form>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { awsResources } from './aws'
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  data() {
+    return {
+      greeting: ''
+    }
+  },
+  methods: {
+    submitForm() {
+      console.log(this.greeting)
+      fetch(awsResources.apiGatewayEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ greeting: this.greeting }),
+      })
+    }
   }
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
